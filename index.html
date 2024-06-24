@@ -4,7 +4,20 @@
 
 <h1>Test</h1>
 
-Kan er hier nu tekst staan?
+<button id="btn">Click Here!</button>
+    <p>
+        Button Clicked <span id="display">0</span> Times
+    </p>
+    <script type="text/javascript">
+        let count = 0;
+        let btn = document.getElementById("btn");
+        let disp = document.getElementById("display");
+         
+        btn.onclick = function () {
+                    count++;
+        disp.innerHTML = count;
+        }
+    </script>
 
 <a href="https://www.example.com"><button type="button">TEST</button></a>
 
