@@ -1,19 +1,139 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="stylesheet.css">
-  </head>
-  <body>
-    Proberende
-    <script>
-      const url = "https://script.google.com/macros/s/AKfycbwT4D8L24i-8v4VnejeeHetj_-SGI1VIms8Dwcat9-SY8aYtdGk6sokEY7U6oeJ7S_7/exec";
 
-      fetch(`${url}?header=Klas`)
-        .then((response) => response.json())
-        .then(({data}) => {
-          console.log(data);
-        }).catch((error) => console.error('Da marcheert hier nie ze', error));
+<head>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet">
+</head>
 
-    </script>
-  </body>
+<body>
+
+  <div id="afw">
+    <h1>Afwezigheden</h1>
+    <p id="datum"></p>
+    <table id="tbl">
+      <tr>
+        <th>Lesuur</th>
+        <th>Klas</th>
+        <th>Leerkracht</th>
+        <th>Vervanging</th>
+        <th></th>
+      </tr>
+    </table>
+  </div>
+  <script>
+    async function doTheThing() {
+      const today = new Date();
+
+      const day = today.getDate();
+      const month = today.getMonth() + 1;
+
+      const daysOfWeekInDutch = [
+        'zondag',
+        'maandag',
+        'dinsdag',
+        'woensdag',
+        'donderdag',
+        'vrijdag',
+        'zaterdag'
+      ];
+
+      const formattedDate = `${daysOfWeekInDutch[day]} ${day}/${month}`;
+
+
+      document.getElementById("datum").append(document.createTextNode(formattedDate));
+
+
+
+      const url =
+        "https://script.google.com/macros/s/AKfycbwT4D8L24i-8v4VnejeeHetj_-SGI1VIms8Dwcat9-SY8aYtdGk6sokEY7U6oeJ7S_7/exec";
+      const t = document.getElementById("tbl");
+
+      var dagen = [];
+      var afwLeerkrachten = [];
+      var klassen = [];
+      var uren = [];
+      var vervangingen = [];
+      var infoLijst = [];
+
+      await fetch(`${url}?header=Dag`).then((response) => response.json()).then(({
+        data
+      }) => {
+        for (let element of data) {
+          dagen.push(element);
+        }
+      })
+
+      await fetch(`${url}?header=Afwezige+Leerkracht`).then((response) => response.json()).then(({
+        data
+      }) => {
+        for (let element of data) {
+          afwLeerkrachten.push(element);
+        }
+      })
+
+      await fetch(`${url}?header=Klas`).then((response) => response.json()).then(({
+        data
+      }) => {
+        for (let element of data) {
+          klassen.push(element);
+        }
+      })
+
+      await fetch(`${url}?header=Lesuur`).then((response) => response.json()).then(({
+        data
+      }) => {
+        for (let element of data) {
+          uren.push(element);
+        }
+      })
+
+      await fetch(`${url}?header=Vervanging`).then((response) => response.json()).then(({
+        data
+      }) => {
+        for (let element of data) {
+          vervangingen.push(element);
+        }
+      })
+
+      await fetch(`${url}?header=Info`).then((response) => response.json()).then(({
+        data
+      }) => {
+        for (let element of data) {
+          infoLijst.push(element);
+        }
+      })
+
+      var lijst = [dagen, uren, klassen, afwLeerkrachten, vervangingen, infoLijst];
+
+      /* for (let element of data) {
+         const par = document.createElement("tr");
+         const s = document.createElement("td");
+         const a = document.createTextNode(element);
+         s.append(a);
+         par.appendChild(s);
+         t.appendChild(par);
+       }*/
+
+      for (let i = 0; i < dagen.length; i++) {
+        const par = document.createElement("tr");
+        for (let j = 1; j < lijst.length; j++) {
+          const s = document.createElement("td");
+          const a = document.createTextNode(lijst[j][i]);
+          s.append(a);
+          par.appendChild(s);
+        }
+        t.appendChild(par);
+      }
+    }
+
+    doTheThing();
+
+  </script>
+</body>
+
 </html>
